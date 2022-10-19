@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet library="css" name="messtyles.css" />
+</h:head>
+<h:body>
+	<div class="p-d-flex">
+		<ui:insert name="header">
+			<ui:include src="/header.xhtml" />
+		</ui:insert>
+		<div class="p-mr-2">
+			<div class="card">
+
+
+				<div class="p-mr-10">
+					<div class="p-mr-2">
+						<h:form id="form">
+							<div class="card crud-demo">
+								<p:growl id="messages" showDetail="true" />
+
+								<p:toolbar>
+									<p:toolbarGroup>
+										<p:commandButton value="Nouveau" icon="pi pi-plus"
+											actionListener="#{auteurBean.openNew}"
+											update=":form:manage-auteur-content"
+											oncomplete="PF('manageAuteurDialog').show()"
+											styleClass="ui-button-success" style="margin-right: .5rem"
+											immediate="true">
+											<p:resetInput target=":form:manage-auteur-content" />
+										</p:commandButton>
+										<p:commandButton id="delete-auteurs-button"
+											value="#{auteurBean.deleteButtonMessage}" icon="pi pi-trash"
+											actionListener="#{auteurBean.deleteSelectedAuteurs}"
+											styleClass="ui-button-danger"
+											disabled="#{!auteurBean.hasSelectedAuteurs()}" update="@this">
+											<p:confirm header="Confirmation"
+												message="Delete the selected auteurs?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+									</p:toolbarGroup>
+									<p:toolbarGroup align="right">
+
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+										<p:commandButton value="#{authBean.currentUser.username}"
+											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
+											style="margin-right: .5rem" process="@this" ajax="false">
+										</p:commandButton>
+									</p:toolbarGroup>
+								</p:toolbar>
+
+								<p:dataTable id="dt-auteurs" widgetVar="dtAuteurs" var="auteur"
+									value="#{auteurBean.auteurs}" reflow="true"
+									styleClass="auteurs-table"
+									selection="#{auteurBean.selectedAuteurs}" rowKey="#{auteur.id}"
+									paginator="true" rows="10" rowSelectMode="add"
+									paginatorPosition="bottom">
+									<f:facet name="header">
+										<div class="auteurs-table-header">
+											<span style="font-weight: bold">AUTEUR</span> <span
+												class="filter-container ui-input-icon-left"> <i
+												class="pi pi-search"></i> <p:inputText id="globalFilter"
+													onkeyup="PF('dtAuteurs').filter()" placeholder="Search" />
+											</span>
+
+										</div>
+									</f:facet>
+
+									<p:ajax event="rowSelect" update=":form:delete-auteurs-button" />
+									<p:ajax event="rowUnselect"
+										update=":form:delete-auteurs-button" />
+									<p:ajax event="rowSelectCheckbox"
+										update=":form:delete-auteurs-button" />
+									<p:ajax event="rowUnselectCheckbox"
+										update=":form:delete-auteurs-button" />
+									<p:ajax event="toggleSelect"
+										update=":form:delete-auteurs-button" />
+
+									<p:column selectionMode="multiple" exportable="false"></p:column>
+
+									<p:column headerText="Nom" sortBy="#{auteur.nom}"
+										filterBy="#{auteur.nom}">
+										<h:outputText value="#{auteur.nom}" />
+									</p:column>
+									<p:column headerText="Prenom" sortBy="#{auteur.prenom}"
+										filterBy="#{auteur.prenom}">
+										<h:outputText value="#{auteur.prenom}" />
+									</p:column>
+									<p:column headerText="Biblographie"
+										sortBy="#{auteur.biblographie}"
+										filterBy="#{auteur.biblographie}">
+										<h:outputText value="#{auteur.biblographie}" />
+									</p:column>
+
+
+									<p:column exportable="false">
+										<p:commandButton icon="pi pi-pencil"
+											update=":form:manage-auteur-content"
+											oncomplete="PF('manageAuteurDialog').show()"
+											styleClass="edit-button rounded-button ui-button-success"
+											process="@this">
+											<f:setPropertyActionListener value="#{auteur}"
+												target="#{auteurBean.selectedAuteur}" />
+											<p:resetInput target=":form:manage-auteur-content" />
+										</p:commandButton>
+										<p:commandButton class="ui-button-warning rounded-button"
+											icon="pi pi-trash" process="@this"
+											oncomplete="PF('deleteAuteurDialog').show()">
+											<f:setPropertyActionListener value="#{auteur}"
+												target="#{auteurBean.selectedAuteur}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+								<p:dialog header="Auteur Details" showEffect="fade" modal="true"
+									widgetVar="manageAuteurDialog" responsive="true">
+									<p:outputPanel id="manage-auteur-content" class="ui-fluid">
+										<p:outputPanel
+											rendered="#{not empty auteurBean.selectedAuteur}">
+
+											<div class="p-field">
+												<p:outputLabel for="nom">Nom</p:outputLabel>
+												<p:inputText id="nom"
+													value="#{auteurBean.selectedAuteur.nom}" required="true" />
+											</div>
+											<div class="p-field">
+												<p:outputLabel for="prenom">Prénom</p:outputLabel>
+												<p:inputText id="prenom"
+													value="#{auteurBean.selectedAuteur.prenom}" required="true" />
+											</div>
+											<div class="p-field">
+												<p:outputLabel for="biblographie">Biblographie</p:outputLabel>
+												<p:inputTextarea id="biblographie"
+													value="#{auteurBean.selectedAuteur.biblographie}" />
+											</div>
+
+
+										</p:outputPanel>
+									</p:outputPanel>
+
+									<f:facet name="footer">
+										<p:commandButton value="Ajouter" icon="pi pi-check"
+											actionListener="#{auteurBean.saveAuteur}"
+											update="manage-auteur-content"
+											process="manage-auteur-content @this" />
+										<p:commandButton value="Annuler" icon="pi pi-times"
+											onclick="PF('manageAuteurDialog').hide()"
+											class="ui-button-secondary" immediate="true" />
+									</f:facet>
+								</p:dialog>
+
+								<p:confirmDialog widgetVar="deleteAuteurDialog"
+									showEffect="fade" width="300" message="Delete the auteur?"
+									header="Confirm" severity="warn">
+									<p:commandButton value="Yes" icon="pi pi-check"
+										actionListener="#{auteurBean.deleteAuteur}" process="@this"
+										oncomplete="PF('deleteAuteurDialog').hide()" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-button-secondary" icon="pi pi-times"
+										onclick="PF('deleteAuteurDialog').hide()" />
+								</p:confirmDialog>
+
+								<p:confirmDialog global="true" showEffect="fade" width="300">
+									<p:commandButton value="Yes" type="button"
+										styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-secondary"
+										icon="pi pi-times" />
+								</p:confirmDialog>
+
+							</div>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</h:body>
+</html>

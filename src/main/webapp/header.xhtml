@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+	<div class="p-d-flex">
+		<div class="p-mr-2">
+			<div class="card">
+				<h:form>
+				 <p:commandButton id="dynaButton" value="Menu" type="button"
+							icon="pi pi-fw pi-home" />
+					<p:growl id="messages" showDetail="true" />
+					<p:autoUpdate />
+
+					<p:panelMenu style="width:300px">
+
+						
+						<p:submenu label="Catégories" update="messages" ajax="false">
+							<p:menuitem value="Auteurs"
+								url="http://localhost:8080/auteur.xhtml" ajax="false" icon="pi pi-user"
+								update="messages" />
+							
+							<p:menuitem value="Emprunts"
+								url="http://localhost:8080/emprunt.xhtml" icon="pi pi-arrow-circle-left"
+								update="messages" />
+							<p:menuitem value="Maison Edition"
+								url="http://localhost:8080/maisonedition.xhtml" icon="pi pi-home"
+								update="messages" />
+								<p:menuitem value="Retour"
+								url="http://localhost:8080/retour.xhtml" icon="pi pi-arrow-circle-right"
+								update="messages" />
+
+						</p:submenu>
+						<p:submenu label="Membre" update="messages" ajax="false">
+							<p:menuitem value="Membre"
+								url="http://localhost:8080/membre.xhtml" icon="pi pi-user"
+								update="messages" />
+							
+						</p:submenu>
+						<p:submenu label="Livre" update="messages" ajax="false" icon="pi pi-book">
+							<p:menuitem value="Livres"
+								url="http://localhost:8080/livre.xhtml" icon="pi pi-book"
+								update="messages" />
+							<p:menuitem value="Type Systeme"
+								url="http://localhost:8080/typesysteme.xhtml" icon=""
+								update="messages" />
+						</p:submenu>
+						<p:submenu label="Administrations" update="messages" ajax="false">
+							<p:menuitem value="Utilisateurs" icon="pi pi-users"
+								url="http://localhost:8080/user.xhtml" />
+						</p:submenu>
+
+					</p:panelMenu>
+
+				</h:form>
+			</div>
+		</div>
+		<div class="p-mr-10">
+			<div class="p-mr-2">
+				<h:form id="form-22">
+					<div class="card crud-demo">
+						<p:growl id="messages" showDetail="true" />
+
+
+						<p:confirmDialog global="true" showEffect="fade" width="300">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-secondary"
+								icon="pi pi-times" />
+						</p:confirmDialog>
+
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+	</ui:composition>
+</html>

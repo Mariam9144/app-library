@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet library="css" name="messtyles.css" />
+</h:head>
+<h:body>
+	<div class="p-d-flex">
+		<ui:insert name="header">
+			<ui:include src="/header.xhtml" />
+		</ui:insert>
+		<div class="p-mr-2">
+			<h:form id="form">
+				<div class="card crud-demo">
+					<p:growl id="messages" showDetail="true" />
+
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:commandButton value="New" icon="pi pi-plus"
+								actionListener="#{membreBean.openNew}"
+								update=":form:manage-membre-content"
+								oncomplete="PF('manageMembreDialog').show()"
+								styleClass="ui-button-success" style="margin-right: .5rem"
+								immediate="true">
+								<p:resetInput target=":form:manage-membre-content" />
+							</p:commandButton>
+							<p:commandButton id="delete-membres-button"
+								value="#{membreBean.deleteButtonMessage}" icon="pi pi-trash"
+								actionListener="#{membreBean.deleteSelectedMembres}"
+								styleClass="ui-button-danger"
+								disabled="#{!membreBean.hasSelectedMembres()}" update="@this">
+								<p:confirm header="Confirmation"
+									message="Voulez-vous supprimé les membres?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+						</p:toolbarGroup>
+						<p:toolbarGroup align="right">
+							<p:button value="Deconnexion" href="/logout"
+								styleClass="ui-button-help" icon="pi pi-power-off" />
+							<p:commandButton value="#{authBean.currentUser.username}"
+								icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
+								style="margin-right: .5rem" process="@this" ajax="false">
+							</p:commandButton>
+						</p:toolbarGroup>
+					</p:toolbar>
+
+					<p:dataTable id="dt-membres" widgetVar="dtMembres" var="membre"
+						value="#{membreBean.membres}" reflow="true"
+						styleClass="membres-table"
+						selection="#{membreBean.selectedMembres}" rowKey="#{membre.id}"
+						paginator="true" rows="10" rowSelectMode="add"
+						paginatorPosition="bottom">
+						<f:facet name="header">
+							<div class="membres-table-header">
+								<span style="font-weight: bold">Membre</span> <span
+									class="filter-container ui-input-icon-left"> <i
+									class="pi pi-search"></i> <p:inputText id="globalFilter"
+										onkeyup="PF('dtMembres').filter()" placeholder="Search" />
+								</span>
+
+							</div>
+						</f:facet>
+
+						<p:ajax event="rowSelect" update=":form:delete-membres-button" />
+						<p:ajax event="rowUnselect" update=":form:delete-membres-button" />
+						<p:ajax event="rowSelectCheckbox"
+							update=":form:delete-membres-button" />
+						<p:ajax event="rowUnselectCheckbox"
+							update=":form:delete-membres-button" />
+						<p:ajax event="toggleSelect" update=":form:delete-membres-button" />
+
+						<p:column selectionMode="multiple" exportable="false"></p:column>
+
+						<p:column headerText="Code" sortBy="#{membre.id}"
+							filterBy="#{membre.id}">
+							<h:outputText value="#{membre.id}" />
+						</p:column>
+						<p:column headerText="Nom" sortBy="#{membre.nom}"
+							filterBy="#{membre.nom}">
+							<h:outputText value="#{membre.nom}" />
+						</p:column>
+						<p:column headerText="Prenom" sortBy="#{membre.prenom}"
+							filterBy="#{membre.prenom}">
+							<h:outputText value="#{membre.prenom}" />
+						</p:column>
+						<p:column headerText="Telephone" sortBy="#{membre.telephone}"
+							filterBy="#{membre.telephone}">
+							<h:outputText value="#{membre.telephone}" />
+
+						</p:column>
+						<p:column headerText="Adresse" sortBy="#{membre.adresse}"
+							filterBy="#{membre.adresse}">
+							<h:outputText value="#{membre.adresse}" />
+
+						</p:column>
+						<p:column headerText="Sexe" sortBy="#{membre.sexe}"
+							filterBy="#{membre.sexe}">
+							<h:outputText value="#{membre.sexe}" />
+
+						</p:column>
+						<p:column headerText="Profession" sortBy="#{membre.profession}"
+							filterBy="#{membre.profession}">
+							<h:outputText value="#{membre.profession}" />
+
+						</p:column>
+						<p:column headerText="Date de Naissance"
+							sortBy="#{membre.date_naissance}"
+							filterBy="#{membre.date_naissance}">
+							<h:outputText value="#{membre.date_naissance}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-pencil"
+								update=":form:manage-membre-content"
+								oncomplete="PF('manageMembreDialog').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{membre}"
+									target="#{membreBean.selectedMembre}" />
+								<p:resetInput target=":form:manage-membre-content" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteMembreDialog').show()">
+								<f:setPropertyActionListener value="#{membre}"
+									target="#{membreBean.selectedMembre}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:dialog header=" Membre " showEffect="fade" modal="true"
+						widgetVar="manageMembreDialog" responsive="true">
+						<p:outputPanel id="manage-membre-content" class="ui-fluid">
+							<p:outputPanel rendered="#{not empty membreBean.selectedMembre}">
+
+
+								<div class="p-grid ui-fluid">
+									<div class="p-field p-col-12 p-md-6">
+										<p:outputLabel for="nom">Nom</p:outputLabel>
+										<p:inputText id="nom" value="#{membreBean.selectedMembre.nom}"
+											required="true" />
+									</div>
+									<div class="p-field p-col-12 p-md-6">
+										<p:outputLabel for="prenom">Prenom</p:outputLabel>
+										<p:inputText id="prenom"
+											value="#{membreBean.selectedMembre.prenom}" required="true" />
+									</div>
+								</div>
+								<div class="p-grid ui-fluid">
+									<div class="p-field p-col-12 p-md-6">
+										<p:outputLabel for="telephone">Telephone</p:outputLabel>
+										<p:inputText id="telephone"
+											value="#{membreBean.selectedMembre.telephone}"
+											required="true" />
+									</div>
+									<div class="p-field p-col-12 p-md-6">
+										<p:outputLabel for="adresse">Adresse</p:outputLabel>
+										<p:inputText id="adresse"
+											value="#{membreBean.selectedMembre.adresse}" required="true" />
+									</div>
+								</div>
+								<div class="p-grid ui-fluid">
+									<div class="p-field p-col-12 p-md-6">
+
+										<p:outputLabel for="@next" value="Sexe" />
+										<p:selectOneMenu id="sexe"
+											value="#{membreBean.selectedMembre.sexe}">
+											<f:selectItem itemLabel="" itemValue="" />
+											<f:selectItem itemLabel="Femme" itemValue="Femme" />
+											<f:selectItem itemLabel="Homme" itemValue="Homme" />
+
+											<f:facet name="footer">
+												<p:divider styleClass="mt-0" />
+												<h:outputText value="3 options" style="font-weight:bold;" />
+											</f:facet>
+										</p:selectOneMenu>
+									</div>
+									<div class="p-field p-col-12 p-md-6">
+										<p:outputLabel for="date_naissance">Date de Naissance</p:outputLabel>
+										<p:datePicker id="date_naissance"
+											value="#{membreBean.selectedMembre.date_naissance}"
+											showIcon="true" />
+									</div>
+								</div>
+								<div class="p-grid ui-fluid">
+								<div class="p-field p-col-12 p-md-12">
+
+										<p:outputLabel for="profession">Profession</p:outputLabel>
+										<p:selectOneRadio id="profession"
+											value="#{membreBean.selectedMembre.profession}"
+											layout="responsive" columns="2">
+											<f:selectItem itemLabel="Etudiant(e)" itemValue="Etudiant" />
+											<f:selectItem itemLabel="Professeurs" itemValue="Professeurs" />
+											
+										</p:selectOneRadio>
+									</div>
+								</div>
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Ajouter" icon="pi pi-check"
+								actionListener="#{membreBean.saveMembre}"
+								update="manage-membre-content"
+								process="manage-membre-content @this" />
+							<p:commandButton value="Annuler" icon="pi pi-times"
+								onclick="PF('manageMembreDialog').hide()"
+								class="ui-button-secondary" immediate="true" />
+						</f:facet>
+					</p:dialog>
+
+					<p:confirmDialog widgetVar="deleteMembreDialog" showEffect="fade"
+						width="300" message="Voulez-vous supprimé un membre?" header="Confirm"
+						severity="warn">
+						<p:commandButton value="Oui" icon="pi pi-check"
+							actionListener="#{membreBean.deleteMembre}" process="@this"
+							oncomplete="PF('deleteMembreDialog').hide()" />
+						<p:commandButton value="Non" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteMembreDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+
+				</div>
+			</h:form>
+		</div>
+	</div>
+
+</h:body>
+</html>

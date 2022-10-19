@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet library="css" name="messtyles.css" />
+</h:head>
+<h:body>
+	<div class="p-d-flex">
+		<ui:insert name="header">
+			<ui:include src="/header.xhtml" />
+		</ui:insert>
+		<div class="p-mr-2">
+			<div class="card">
+
+				<div class="p-mr-10">
+					<div class="p-mr-2">
+						<h:form id="form">
+							<div class="card crud-demo">
+								<p:growl id="messages" showDetail="true" />
+
+								<p:toolbar>
+									<p:toolbarGroup>
+										<p:commandButton value="Nouveau" icon="pi pi-plus"
+											actionListener="#{empruntBean.openNew}"
+											update=":form:manage-emprunt-content"
+											oncomplete="PF('manageEmpruntDialog').show()"
+											styleClass="ui-button-success" style="margin-right: .5rem"
+											immediate="true">
+											<p:resetInput target=":form:manage-emprunt-content" />
+										</p:commandButton>
+										<p:commandButton id="delete-emprunts-button"
+											value="#{empruntBean.deleteButtonMessage}" icon="pi pi-trash"
+											actionListener="#{empruntBean.deleteSelectedEmprunts}"
+											styleClass="ui-button-danger"
+											disabled="#{!empruntBean.hasSelectedEmprunts()}"
+											update="@this">
+											<p:confirm header="Confirmation"
+												message="Delete the selected emprunts?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+									</p:toolbarGroup>
+									<p:toolbarGroup align="right">
+
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+										<p:commandButton value="#{authBean.currentUser.username}"
+											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
+											style="margin-right: .5rem" process="@this" ajax="false">
+										</p:commandButton>
+									</p:toolbarGroup>
+								</p:toolbar>
+
+								<p:dataTable id="dt-emprunts" widgetVar="dtEmprunts"
+									var="emprunt" value="#{empruntBean.emprunts}" reflow="true"
+									styleClass="emprunts-table"
+									selection="#{empruntBean.selectedEmprunts}"
+									rowKey="#{emprunt.id}" paginator="true" rows="10"
+									rowSelectMode="add" paginatorPosition="bottom">
+									<f:facet name="header">
+										<div class="emprunts-table-header">
+											<span style="font-weight: bold">Emprunt</span> <span
+												class="filter-container ui-input-icon-left"> <i
+												class="pi pi-search"></i> <p:inputText id="globalFilter"
+													onkeyup="PF('dtEmprunts').filter()" placeholder="Search" />
+											</span>
+
+										</div>
+									</f:facet>
+
+									<p:ajax event="rowSelect" update=":form:delete-emprunts-button" />
+									<p:ajax event="rowUnselect"
+										update=":form:delete-emprunts-button" />
+									<p:ajax event="rowSelectCheckbox"
+										update=":form:delete-emprunts-button" />
+									<p:ajax event="rowUnselectCheckbox"
+										update=":form:delete-emprunts-button" />
+									<p:ajax event="toggleSelect"
+										update=":form:delete-emprunts-button" />
+
+									<p:column selectionMode="multiple" exportable="false"></p:column>
+
+									<p:column headerText="Membre" sortBy="#{emprunt.membre.nom}"
+										filterBy="#{emprunt.membre.nom}">
+										<h:outputText value="#{emprunt.membre.nom}" />
+									</p:column>
+
+									<p:column headerText="Livre" sortBy="#{emprunt.livre.nom}"
+										filterBy="#{emprunt.livre.nom}">
+										<h:outputText value="#{emprunt.livre.nom}" />
+									</p:column>
+									<p:column headerText="Date Début"
+										sortBy="#{emprunt.date_debut}"
+										filterBy="#{emprunt.date_debut}">
+										<h:outputText value="#{emprunt.date_debut}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Date Fin" sortBy="#{emprunt.date_fin}"
+										filterBy="#{emprunt.date_fin}">
+										<h:outputText value="#{emprunt.date_fin}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</p:column>
+
+
+									<p:column exportable="false">
+										<p:commandButton icon="pi pi-pencil"
+											update=":form:manage-emprunt-content"
+											oncomplete="PF('manageEmpruntDialog').show()"
+											styleClass="edit-button rounded-button ui-button-success"
+											process="@this">
+											<f:setPropertyActionListener value="#{emprunt}"
+												target="#{empruntBean.selectedEmprunt}" />
+											<p:resetInput target=":form:manage-emprunt-content" />
+										</p:commandButton>
+										<p:commandButton class="ui-button-warning rounded-button"
+											icon="pi pi-trash" process="@this"
+											oncomplete="PF('deleteEmpruntDialog').show()">
+											<f:setPropertyActionListener value="#{emprunt}"
+												target="#{empruntBean.selectedEmprunt}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+								<p:dialog header="Nouvel Emprunt " showEffect="fade"
+									modal="true" widgetVar="manageEmpruntDialog" responsive="true">
+									<p:outputPanel id="manage-emprunt-content" class="ui-fluid">
+										<p:outputPanel
+											rendered="#{not empty empruntBean.selectedEmprunt}">
+											<div class="p-field ">
+												<h:outputLabel for="">Membre</h:outputLabel>
+												<p:selectOneMenu
+													value="#{empruntBean.selectedEmprunt.membre}"
+													converter="#{genericSecuredConverter}">
+													<f:selectItems value="#{membreBean.membres}" var="membre"
+														itemLabel="#{membre.nom}" itemValue="#{membre}" />
+												</p:selectOneMenu>
+											</div>
+										
+											<div class="p-field ">
+												<h:outputLabel for="">Livre</h:outputLabel>
+												<BR />
+												<p:selectCheckboxMenu id="grouped"
+													value="#{empruntBean.selectedLivres}" label="Livres"
+													converter="#{genericSecuredConverter}" style="width: 15rem"
+													multiple="true" filter="true" filterMatchMode="startsWith"
+													panelStyle="width: 15rem" scrollHeight="250">
+													<f:selectItems value="#{livreBean.livres}" var="livre"
+														itemLabel="#{livre.nom}" itemValue="#{livre}" />
+												</p:selectCheckboxMenu>
+											</div>
+											<div class="p-field">
+												<p:outputLabel for="date_debut">Date de Début</p:outputLabel>
+												<p:datePicker id="date_debut"
+													value="#{empruntBean.selectedEmprunt.date_debut}"
+													showIcon="true" />
+											</div>
+											<div class="p-field">
+												<p:outputLabel for="date_fin">Date de Fin</p:outputLabel>
+												<p:datePicker id="date_fin"
+													value="#{empruntBean.selectedEmprunt.date_fin}"
+													showIcon="true" />
+											</div>
+
+
+										</p:outputPanel>
+									</p:outputPanel>
+
+									<f:facet name="footer">
+										<p:commandButton value="Ajouter" icon="pi pi-check"
+											actionListener="#{empruntBean.saveEmprunt}"
+											update="manage-emprunt-content"
+											process="manage-emprunt-content @this" />
+										<p:commandButton value="Annuler" icon="pi pi-times"
+											onclick="PF('manageEmpruntDialog').hide()"
+											class="ui-button-secondary" immediate="true" />
+									</f:facet>
+								</p:dialog>
+
+								<p:confirmDialog widgetVar="deleteEmpruntDialog"
+									showEffect="fade" width="300" message="Delete the emprunt?"
+									header="Confirm" severity="warn">
+									<p:commandButton value="OUI" icon="pi pi-check"
+										actionListener="#{empruntBean.deleteEmprunt}" process="@this"
+										oncomplete="PF('deleteEmpruntDialog').hide()" />
+									<p:commandButton value="NON" type="button"
+										styleClass="ui-button-secondary" icon="pi pi-times"
+										onclick="PF('deleteEmpruntDialog').hide()" />
+								</p:confirmDialog>
+
+								<p:confirmDialog global="true" showEffect="fade" width="300">
+									<p:commandButton value="Yes" type="button"
+										styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-secondary"
+										icon="pi pi-times" />
+								</p:confirmDialog>
+
+							</div>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</h:body>
+</html>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet library="css" name="messtyles.css" />
+</h:head>
+<h:body>
+	<div class="p-d-flex">
+		<ui:insert name="header">
+			<ui:include src="/header.xhtml" />
+		</ui:insert>
+		<div class="p-mr-2">
+			<div class="card">
+
+				<div class="p-mr-10">
+					<div class="p-mr-2">
+						<h:form id="form">
+							<div class="card crud-demo">
+								<p:growl id="messages" showDetail="true" />
+
+								<p:toolbar>
+									<p:toolbarGroup>
+										<p:commandButton value="Nouveau" icon="pi pi-plus"
+											actionListener="#{livreBean.openNew}"
+											update=":form:manage-livre-content"
+											oncomplete="PF('manageLivreDialog').show()"
+											styleClass="ui-button-success" style="margin-right: .5rem"
+											immediate="true">
+											<p:resetInput target=":form:manage-livre-content" />
+										</p:commandButton>
+										<p:commandButton id="delete-livres-button"
+											value="#{livreBean.deleteButtonMessage}" icon="pi pi-trash"
+											actionListener="#{livreBean.deleteSelectedLivres}"
+											styleClass="ui-button-danger"
+											disabled="#{!livreBean.hasSelectedLivres()}" update="@this">
+											<p:confirm header="Confirmation"
+												message="Delete the selected livres?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+									</p:toolbarGroup>
+									<p:toolbarGroup align="right">
+
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+										<p:commandButton value="#{authBean.currentUser.username}"
+											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
+											style="margin-right: .5rem" process="@this" ajax="false">
+										</p:commandButton>
+									</p:toolbarGroup>
+								</p:toolbar>
+
+								<p:dataTable id="dt-livres" widgetVar="dtLivres" var="livre"
+									value="#{livreBean.livres}" reflow="true"
+									styleClass="livres-table"
+									selection="#{livreBean.selectedLivres}" rowKey="#{livre.id}"
+									paginator="true" rows="10" rowSelectMode="add"
+									paginatorPosition="bottom">
+									<f:facet name="header">
+										<div class="livres-table-header">
+											<span style="font-weight: bold">Livre</span> <span
+												class="filter-container ui-input-icon-left"> <i
+												class="pi pi-search"></i> <p:inputText id="globalFilter"
+													onkeyup="PF('dtLivres').filter()" placeholder="Search" />
+											</span>
+
+										</div>
+									</f:facet>
+
+									<p:ajax event="rowSelect" update=":form:delete-livres-button" />
+									<p:ajax event="rowUnselect" update=":form:delete-livres-button" />
+									<p:ajax event="rowSelectCheckbox"
+										update=":form:delete-livres-button" />
+									<p:ajax event="rowUnselectCheckbox"
+										update=":form:delete-livres-button" />
+									<p:ajax event="toggleSelect"
+										update=":form:delete-livres-button" />
+
+									<p:column selectionMode="multiple" exportable="false"></p:column>
+									<!-- 
+									<p:column headerText="Identifiant" sortBy="#{livre.id}"
+										filterBy="#{livre.id}">
+										<h:outputText value="#{livre.id}" />
+									</p:column>
+									 -->
+									<p:column headerText="Nom" sortBy="#{livre.nom}"
+										filterBy="#{livre.nom}">
+										<h:outputText value="#{livre.nom}" />
+									</p:column>
+									<p:column headerText="Langue" sortBy="#{livre.langue}"
+										filterBy="#{livre.langue}">
+										<h:outputText value="#{livre.langue}" />
+
+
+									</p:column>
+									<p:column headerText="Date Publication"
+										sortBy="#{livre.date_publication}"
+										filterBy="#{livre.date_publication}">
+										<h:outputText value="#{livre.date_publication}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Exemplaire" sortBy="#{livre.exemplaire}"
+										filterBy="#{livre.exemplaire}">
+										<h:outputText value="#{livre.exemplaire}" />
+									</p:column>
+
+									<p:column headerText="Description"
+										sortBy="#{livre.description}" filterBy="#{livre.description}">
+										<h:outputText value="#{livre.description}" />
+									</p:column>
+
+									<p:column headerText="Couverture" sortBy="#{livre.couverture}"
+										filterBy="#{livre.couverture}">
+										<h:outputText value="#{livre.couverture}" />
+									</p:column>
+
+
+									<p:column exportable="false">
+										<p:commandButton icon="pi pi-pencil"
+											update=":form:manage-livre-content"
+											oncomplete="PF('manageLivreDialog').show()"
+											styleClass="edit-button rounded-button ui-button-success"
+											process="@this">
+											<f:setPropertyActionListener value="#{livre}"
+												target="#{livreBean.selectedLivre}" />
+											<p:resetInput target=":form:manage-livre-content" />
+										</p:commandButton>
+										<p:commandButton class="ui-button-warning rounded-button"
+											icon="pi pi-trash" process="@this"
+											oncomplete="PF('deleteLivreDialog').show()">
+											<f:setPropertyActionListener value="#{livre}"
+												target="#{livreBean.selectedLivre}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+
+								<p:dialog header="Nouveau Livre " showEffect="fade" modal="true"
+									widgetVar="manageLivreDialog" responsive="true">
+									<p:outputPanel id="manage-livre-content" class="ui-fluid">
+										<p:outputPanel rendered="#{not empty livreBean.selectedLivre}">
+
+											<div class="p-grid ui-fluid">
+
+												<div class="p-field p-col-12 p-md-12">
+													<p:outputLabel for="nom">Nom du Livre</p:outputLabel>
+													<p:inputText id="nom"
+														value="#{livreBean.selectedLivre.nom}" required="true" />
+												</div>
+											</div>
+											<div class="p-grid ui-fluid">
+												<div class="p-field p-col-12 p-md-6">
+													<p:outputLabel for="langue">Langue</p:outputLabel>
+													<p:inputText id="langue"
+														value="#{livreBean.selectedLivre.langue}" required="true" />
+												</div>
+												<div class="p-field p-col-12 p-md-6">
+													<p:outputLabel for="date_publication">Date de Publication</p:outputLabel>
+													<p:datePicker id="date_publication"
+														value="#{livreBean.selectedLivre.date_publication}"
+														showIcon="true" />
+												</div>
+											</div>
+
+											<div class="p-grid ui-fluid">
+												<div class="p-field p-col-12 p-md-6">
+													<p:outputLabel for="exemplaire">Exemplaire</p:outputLabel>
+													<p:inputText id="exemplaire" min="0"
+														value="#{livreBean.selectedLivre.exemplaire}"
+														required="true" />
+												</div>
+												<div class="p-field p-col-12 p-md-6">
+													<p:outputLabel for="couverture">Couverture</p:outputLabel>
+													<p:inputText id="couverture"
+														value="#{livreBean.selectedLivre.couverture}"
+														required="true" />
+												</div>
+											</div>
+											<div class="p-field p-col-12 p-md-12">
+												<p:outputLabel for="description">Description</p:outputLabel>
+												<p:inputTextarea id="description"
+													value="#{livreBean.selectedLivre.description}" />
+											</div>
+
+										</p:outputPanel>
+									</p:outputPanel>
+
+									<f:facet name="footer">
+										<p:commandButton value="Ajouter" icon="pi pi-check"
+											actionListener="#{livreBean.saveLivre}"
+											update="manage-livre-content"
+											process="manage-livre-content @this" />
+										<p:commandButton value="Annuler" icon="pi pi-times"
+											onclick="PF('manageLivreDialog').hide()"
+											class="ui-button-secondary" immediate="true" />
+									</f:facet>
+								</p:dialog>
+
+								<p:confirmDialog widgetVar="deleteLivreDialog" showEffect="fade"
+									width="300" message="Delete the livre?" header="Confirm"
+									severity="warn">
+									<p:commandButton value="OUI" icon="pi pi-check"
+										actionListener="#{livreBean.deleteLivre}" process="@this"
+										oncomplete="PF('deleteLivreDialog').hide()" />
+									<p:commandButton value="NON" type="button"
+										styleClass="ui-button-secondary" icon="pi pi-times"
+										onclick="PF('deleteLivreDialog').hide()" />
+								</p:confirmDialog>
+
+								<p:confirmDialog global="true" showEffect="fade" width="300">
+									<p:commandButton value="Yes" type="button"
+										styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-secondary"
+										icon="pi pi-times" />
+								</p:confirmDialog>
+
+							</div>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</h:body>
+</html>

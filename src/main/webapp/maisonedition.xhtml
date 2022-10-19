@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="webjars"
+		name="primeflex/2.0.0/primeflex.min.css" />
+	<h:outputStylesheet library="css" name="messtyles.css" />
+</h:head>
+<h:body>
+	<div class="p-d-flex">
+		<ui:insert name="header">
+			<ui:include src="/header.xhtml" />
+		</ui:insert>
+		<div class="p-mr-2">
+			<h:form id="form">
+				<div class="card crud-demo">
+					<p:growl id="messages" showDetail="true" />
+
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:commandButton value="New" icon="pi pi-plus"
+								actionListener="#{maisonEditionBean.openNew}"
+								update=":form:manage-maisonEdition-content"
+								oncomplete="PF('manageMaisonEditionDialog').show()"
+								styleClass="ui-button-success" style="margin-right: .5rem"
+								immediate="true">
+								<p:resetInput target=":form:manage-maisonEdition-content" />
+							</p:commandButton>
+							<p:commandButton id="delete-maisonEditions-button"
+								value="#{maisonEditionBean.deleteButtonMessage}"
+								icon="pi pi-trash"
+								actionListener="#{maisonEditionBean.deleteSelectedMaisonEditions}"
+								styleClass="ui-button-danger"
+								disabled="#{!maisonEditionBean.hasSelectedMaisonEditions()}"
+								update="@this">
+								<p:confirm header="Confirmation"
+									message="Voulez-vous supprimé les maisonEditions?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+						</p:toolbarGroup>
+						<p:toolbarGroup align="right">
+							<p:button value="Deconnexion" href="/logout"
+								styleClass="ui-button-help" icon="pi pi-power-off" />
+							<p:commandButton value="#{authBean.currentUser.username}"
+								icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
+								style="margin-right: .5rem" process="@this" ajax="false">
+							</p:commandButton>
+						</p:toolbarGroup>
+					</p:toolbar>
+
+					<p:dataTable id="dt-maisonEditions" widgetVar="dtMaisonEditions"
+						var="maisonEdition" value="#{maisonEditionBean.maisonEditions}"
+						reflow="true" styleClass="maisonEditions-table"
+						selection="#{maisonEditionBean.selectedMaisonEditions}"
+						rowKey="#{maisonEdition.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom">
+						<f:facet name="header">
+							<div class="maisonEditions-table-header">
+								<span style="font-weight: bold">Maison d'édition</span> <span
+									class="filter-container ui-input-icon-left"> <i
+									class="pi pi-search"></i> <p:inputText id="globalFilter"
+										onkeyup="PF('dtMaisonEditions').filter()" placeholder="Search" />
+								</span>
+
+							</div>
+						</f:facet>
+
+						<p:ajax event="rowSelect"
+							update=":form:delete-maisonEditions-button" />
+						<p:ajax event="rowUnselect"
+							update=":form:delete-maisonEditions-button" />
+						<p:ajax event="rowSelectCheckbox"
+							update=":form:delete-maisonEditions-button" />
+						<p:ajax event="rowUnselectCheckbox"
+							update=":form:delete-maisonEditions-button" />
+						<p:ajax event="toggleSelect"
+							update=":form:delete-maisonEditions-button" />
+
+						<p:column selectionMode="multiple" exportable="false"></p:column>
+
+						<p:column headerText="Code" sortBy="#{maisonEdition.id}"
+							filterBy="#{maisonEdition.id}">
+							<h:outputText value="#{maisonEdition.id}" />
+						</p:column>
+						<p:column headerText="Nom" sortBy="#{maisonEdition.nom}"
+							filterBy="#{maisonEdition.nom}">
+							<h:outputText value="#{maisonEdition.nom}" />
+						</p:column>
+						<p:column headerText="Description"
+							sortBy="#{maisonEdition.description}"
+							filterBy="#{maisonEdition.description}">
+							<h:outputText value="#{maisonEdition.description}" />
+						</p:column>
+
+						<p:column headerText="Livre" sortBy="#{maisonEdition.livre.nom}"
+							filterBy="#{maisonEdition.livre.nom}">
+							<h:outputText value="#{maisonEdition.livre.nom}" />
+						</p:column>
+
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-pencil"
+								update=":form:manage-maisonEdition-content"
+								oncomplete="PF('manageMaisonEditionDialog').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{maisonEdition}"
+									target="#{maisonEditionBean.selectedMaisonEdition}" />
+								<p:resetInput target=":form:manage-maisonEdition-content" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteMaisonEditionDialog').show()">
+								<f:setPropertyActionListener value="#{maisonEdition}"
+									target="#{maisonEditionBean.selectedMaisonEdition}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:dialog header=" Maison Edition " showEffect="fade" modal="true"
+						widgetVar="manageMaisonEditionDialog" responsive="true">
+						<p:outputPanel id="manage-maisonEdition-content" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty maisonEditionBean.selectedMaisonEdition}">
+
+								<div class="p-field">
+									<p:outputLabel for="id">Code</p:outputLabel>
+									<p:inputText id="id"
+										value="#{maisonEditionBean.selectedMaisonEdition.id}"
+										required="true" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="nom">Nom</p:outputLabel>
+									<p:inputText id="nom"
+										value="#{maisonEditionBean.selectedMaisonEdition.nom}"
+										required="true" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="description">Description</p:outputLabel>
+									<p:inputTextarea id="description"
+										value="#{maisonEditionBean.selectedMaisonEdition.description}" />
+								</div>
+
+								<div class="p-field">
+									<h:outputLabel for="">Livre</h:outputLabel>
+									<BR />
+									<p:selectOneMenu
+										value="#{maisonEditionBean.selectedMaisonEdition.livre}"
+										converter="#{genericSecuredConverter}">
+										<f:selectItems value="#{livreBean.livres}" var="livre"
+											itemLabel="#{livre.nom}" itemValue="#{livre}" />
+									</p:selectOneMenu>
+								</div>
+
+
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Ajouter" icon="pi pi-check"
+								actionListener="#{maisonEditionBean.saveMaisonEdition}"
+								update="manage-maisonEdition-content"
+								process="manage-maisonEdition-content @this" />
+							<p:commandButton value="Annuler" icon="pi pi-times"
+								onclick="PF('manageMaisonEditionDialog').hide()"
+								class="ui-button-secondary" immediate="true" />
+						</f:facet>
+					</p:dialog>
+
+					<p:confirmDialog widgetVar="deleteMaisonEditionDialog"
+						showEffect="fade" width="300" message="Delete the maisonEdition?"
+						header="Confirm" severity="warn">
+						<p:commandButton value="Oui" icon="pi pi-check"
+							actionListener="#{maisonEditionBean.deleteMaisonEdition}"
+							process="@this"
+							oncomplete="PF('deleteMaisonEditionDialog').hide()" />
+						<p:commandButton value="Non" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteMaisonEditionDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+
+				</div>
+			</h:form>
+		</div>
+	</div>
+
+</h:body>
+</html>
