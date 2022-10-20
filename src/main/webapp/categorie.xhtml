@@ -28,20 +28,20 @@
 								<p:toolbar>
 									<p:toolbarGroup>
 										<p:commandButton value="Nouveau" icon="pi pi-plus"
-											actionListener="#{auteurBean.openNew}"
-											update=":form:manage-auteur-content"
-											oncomplete="PF('manageAuteurDialog').show()"
+											actionListener="#{categorieBean.openNew}"
+											update=":form:manage-categorie-content"
+											oncomplete="PF('manageCategorieDialog').show()"
 											styleClass="ui-button-success" style="margin-right: .5rem"
 											immediate="true">
-											<p:resetInput target=":form:manage-auteur-content" />
+											<p:resetInput target=":form:manage-categorie-content" />
 										</p:commandButton>
-										<p:commandButton id="delete-auteurs-button"
-											value="#{auteurBean.deleteButtonMessage}" icon="pi pi-trash"
-											actionListener="#{auteurBean.deleteSelectedAuteurs}"
+										<p:commandButton id="delete-categories-button"
+											value="#{categorieBean.deleteButtonMessage}" icon="pi pi-trash"
+											actionListener="#{categorieBean.deleteSelectedCategories}"
 											styleClass="ui-button-danger"
-											disabled="#{!auteurBean.hasSelectedAuteurs()}" update="@this">
+											disabled="#{!categorieBean.hasSelectedCategories()}" update="@this">
 											<p:confirm header="Confirmation"
-												message="Delete the selected auteurs?"
+												message="Delete the selected categories?"
 												icon="pi pi-exclamation-triangle" />
 										</p:commandButton>
 									</p:toolbarGroup>
@@ -56,90 +56,83 @@
 									</p:toolbarGroup>
 								</p:toolbar>
 
-								<p:dataTable id="dt-auteurs" widgetVar="dtAuteurs" var="auteur"
-									value="#{auteurBean.auteurs}" reflow="true"
-									styleClass="auteurs-table"
-									selection="#{auteurBean.selectedAuteurs}" rowKey="#{auteur.id}"
+								<p:dataTable id="dt-categories" widgetVar="dtCategories" var="categorie"
+									value="#{categorieBean.categories}" reflow="true"
+									styleClass="categories-table"
+									selection="#{categorieBean.selectedCategories}" rowKey="#{categorie.id}"
 									paginator="true" rows="10" rowSelectMode="add"
 									paginatorPosition="bottom">
 									<f:facet name="header">
-										<div class="auteurs-table-header">
-											<span style="font-weight: bold">AUTEUR</span> <span
+										<div class="categories-table-header">
+											<span style="font-weight: bold">CATEGORIE DE LIVRE</span> <span
 												class="filter-container ui-input-icon-left"> <i
 												class="pi pi-search"></i> <p:inputText id="globalFilter"
-													onkeyup="PF('dtAuteurs').filter()" placeholder="Search" />
+													onkeyup="PF('dtCategories').filter()" placeholder="Search" />
 											</span>
 
 										</div>
 									</f:facet>
 
-									<p:ajax event="rowSelect" update=":form:delete-auteurs-button" />
+									<p:ajax event="rowSelect" update=":form:delete-categories-button" />
 									<p:ajax event="rowUnselect"
-										update=":form:delete-auteurs-button" />
+										update=":form:delete-categories-button" />
 									<p:ajax event="rowSelectCheckbox"
-										update=":form:delete-auteurs-button" />
+										update=":form:delete-categories-button" />
 									<p:ajax event="rowUnselectCheckbox"
-										update=":form:delete-auteurs-button" />
+										update=":form:delete-categories-button" />
 									<p:ajax event="toggleSelect"
-										update=":form:delete-auteurs-button" />
+										update=":form:delete-categories-button" />
 
 									<p:column selectionMode="multiple" exportable="false"></p:column>
 
-									<p:column headerText="Nom" sortBy="#{auteur.nom}"
-										filterBy="#{auteur.nom}">
-										<h:outputText value="#{auteur.nom}" />
+									<p:column headerText="Nom de la catégorie" sortBy="#{categorie.libelle}"
+										filterBy="#{categorie.libelle}">
+										<h:outputText value="#{categorie.libelle}" />
 									</p:column>
-									<p:column headerText="Prenom" sortBy="#{auteur.prenom}"
-										filterBy="#{auteur.prenom}">
-										<h:outputText value="#{auteur.prenom}" />
-									</p:column>
-									<p:column headerText="Biblographie"
-										sortBy="#{auteur.biblographie}"
-										filterBy="#{auteur.biblographie}">
-										<h:outputText value="#{auteur.biblographie}" />
+									
+									<p:column headerText="Description"
+										sortBy="#{categorie.description}"
+										filterBy="#{categorie.description}">
+										<h:outputText value="#{categorie.description}" />
 									</p:column>
 
 
 									<p:column exportable="false">
 										<p:commandButton icon="pi pi-pencil"
-											update=":form:manage-auteur-content"
-											oncomplete="PF('manageAuteurDialog').show()"
+											update=":form:manage-categorie-content"
+											oncomplete="PF('manageCategorieDialog').show()"
 											styleClass="edit-button rounded-button ui-button-success"
 											process="@this">
-											<f:setPropertyActionListener value="#{auteur}"
-												target="#{auteurBean.selectedAuteur}" />
-											<p:resetInput target=":form:manage-auteur-content" />
+											<f:setPropertyActionListener value="#{categorie}"
+												target="#{categorieBean.selectedCategorie}" />
+											<p:resetInput target=":form:manage-categorie-content" />
 										</p:commandButton>
 										<p:commandButton class="ui-button-warning rounded-button"
 											icon="pi pi-trash" process="@this"
-											oncomplete="PF('deleteAuteurDialog').show()">
-											<f:setPropertyActionListener value="#{auteur}"
-												target="#{auteurBean.selectedAuteur}" />
+											oncomplete="PF('deleteCategorieDialog').show()">
+											<f:setPropertyActionListener value="#{categorie}"
+												target="#{categorieBean.selectedCategorie}" />
 										</p:commandButton>
 									</p:column>
 
 								</p:dataTable>
 
-								<p:dialog header="Auteur Details" showEffect="fade" modal="true"
-									widgetVar="manageAuteurDialog" responsive="true">
-									<p:outputPanel id="manage-auteur-content" class="ui-fluid">
+								<p:dialog header="Categorie Details" showEffect="fade" modal="true"
+									widgetVar="manageCategorieDialog" responsive="true">
+									<p:outputPanel id="manage-categorie-content" class="ui-fluid">
 										<p:outputPanel
-											rendered="#{not empty auteurBean.selectedAuteur}">
+											rendered="#{not empty categorieBean.selectedCategorie}">
 
 											<div class="p-field">
-												<p:outputLabel for="nom">Nom</p:outputLabel>
+												<p:outputLabel for="nom">Nom de la catégorie</p:outputLabel>
 												<p:inputText id="nom"
-													value="#{auteurBean.selectedAuteur.nom}" required="true" />
+													value="#{categorieBean.selectedCategorie.libelle}" required="true" />
 											</div>
+		
 											<div class="p-field">
-												<p:outputLabel for="prenom">Prénom</p:outputLabel>
-												<p:inputText id="prenom"
-													value="#{auteurBean.selectedAuteur.prenom}" required="true" />
-											</div>
-											<div class="p-field">
-												<p:outputLabel for="biblographie">Biblographie</p:outputLabel>
-												<p:inputTextarea id="biblographie"
-													value="#{auteurBean.selectedAuteur.biblographie}" />
+												<p:outputLabel for="description">Description</p:outputLabel>
+												<p:inputTextarea id="description"
+													value="#{categorieBean.selectedCategorie.description}" />
 											</div>
 
 
@@ -148,24 +141,24 @@
 
 									<f:facet name="footer">
 										<p:commandButton value="Ajouter" icon="pi pi-check"
-											actionListener="#{auteurBean.saveAuteur}"
-											update="manage-auteur-content"
-											process="manage-auteur-content @this" />
+											actionListener="#{categorieBean.saveCategorie}"
+											update="manage-categorie-content"
+											process="manage-categorie-content @this" />
 										<p:commandButton value="Annuler" icon="pi pi-times"
-											onclick="PF('manageAuteurDialog').hide()"
+											onclick="PF('manageCategorieDialog').hide()"
 											class="ui-button-secondary" immediate="true" />
 									</f:facet>
 								</p:dialog>
 
-								<p:confirmDialog widgetVar="deleteAuteurDialog"
-									showEffect="fade" width="300" message="Voulez-vous supprimés l'auteur?"
+								<p:confirmDialog widgetVar="deleteCategorieDialog"
+									showEffect="fade" width="300" message="Voulez-vous supprimés la catégorie?"
 									header="Confirm" severity="warn">
 									<p:commandButton value="Yes" icon="pi pi-check"
-										actionListener="#{auteurBean.deleteAuteur}" process="@this"
-										oncomplete="PF('deleteAuteurDialog').hide()" />
+										actionListener="#{categorieBean.deleteCategorie}" process="@this"
+										oncomplete="PF('deleteCategorieDialog').hide()" />
 									<p:commandButton value="No" type="button"
 										styleClass="ui-button-secondary" icon="pi pi-times"
-										onclick="PF('deleteAuteurDialog').hide()" />
+										onclick="PF('deleteCategorieDialog').hide()" />
 								</p:confirmDialog>
 
 								<p:confirmDialog global="true" showEffect="fade" width="300">

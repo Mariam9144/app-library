@@ -143,18 +143,17 @@
 														itemLabel="#{membre.nom}" itemValue="#{membre}" />
 												</p:selectOneMenu>
 											</div>
-										
+
 											<div class="p-field ">
-												<h:outputLabel for="">Livre</h:outputLabel>
-												<BR />
-												<p:selectCheckboxMenu id="grouped"
-													value="#{empruntBean.selectedLivres}" label="Livres"
-													converter="#{genericSecuredConverter}" style="width: 15rem"
-													multiple="true" filter="true" filterMatchMode="startsWith"
-													panelStyle="width: 15rem" scrollHeight="250">
-													<f:selectItems value="#{livreBean.livres}" var="livre"
-														itemLabel="#{livre.nom}" itemValue="#{livre}" />
-												</p:selectCheckboxMenu>
+											<h:outputLabel for="">Livre</h:outputLabel>
+											<BR />
+											<p:selectCheckboxMenu id="multiple" value="#{empruntBean.selectedLivres}" label="Livres" style="min-width: 15rem"
+																  multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250"
+																  emptyLabel="Please select..." updateLabel="true">
+												<p:ajax event="itemUnselect" listener="#{empruntBean.onItemUnselect}"/>
+												<f:selectItems value="#{livreBean.livres}" var="livre"
+															   itemLabel="#{livre.nom}" itemValue="#{livre.id}"/>
+											</p:selectCheckboxMenu>
 											</div>
 											<div class="p-field">
 												<p:outputLabel for="date_debut">Date de Début</p:outputLabel>

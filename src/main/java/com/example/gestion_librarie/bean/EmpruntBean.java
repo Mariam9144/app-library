@@ -1,5 +1,6 @@
 package com.example.gestion_librarie.bean;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -9,6 +10,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.UnselectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +34,12 @@ public class EmpruntBean {
 	private Emprunt selectedEmprunt;
 
 	private List<Emprunt> selectedEmprunts;
-	
+
+
 	/*private List<Membre> membres;
 
-	private MembreService membreService;*/
-	private Livre[] selectedLivres;
+        private MembreService membreService;*/
+	private List<Integer> selectedLivres;
 
 	private List<Livre> livres;
 	@Autowired
@@ -47,6 +50,13 @@ public class EmpruntBean {
 
 	/*@Autowired
 	private EmpruntRepository empruntRepository;*/
+	public void onItemUnselect(UnselectEvent event) {
+		FacesMessage msg = new FacesMessage();
+		msg.setSummary("Item unselected: " + event.getObject().toString());
+		msg.setSeverity(FacesMessage.SEVERITY_INFO);
+
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
 
 	@PostConstruct
 	public void init() {
@@ -79,40 +89,56 @@ public class EmpruntBean {
 
 	public void saveEmprunt() {
 		if (this.selectedEmprunt.getId() == null) {
+			//System.out.println("LISTE ID LIVRE "+ Arrays.stream(selectedLivres).iterator());
 			// this.selectedEmprunt.setCode(UUID.randomUUID().toString().replaceAll("-",
 			// "").substring(0, 9));
 			// this.emprunts.add(this.selectedEmprunt);
+			selectedLivres.forEach(select->{
+				System.out.println("selectedLivres "+select);
+				Livre livre=new Livre();
+				livre=livreService.getLivreRepository().findById(select).get();
 
-			//System.out.println("Membre "+selectedEmprunt);
-			Livre livre=new Livre();
-			livre.setId(selectedEmprunt.getLivre().getId());
-			livre.setCouverture(selectedEmprunt.getLivre().getCouverture());
-			livre.setNom(selectedEmprunt.getLivre().getNom());
-			livre.setDate_publication(selectedEmprunt.getLivre().getDate_publication());
-			livre.setDescription(selectedEmprunt.getLivre().getDescription());
-			livre.setLangue(selectedEmprunt.getLivre().getLangue());
-			int nbrRest=selectedEmprunt.getLivre().getExemplaire()-1;
-			if(nbrRest>0)
-                livre.setExemplaire(nbrRest);
-			System.out.println("*********************Livre ON Selectb items******************** "+livre);
+				int nbrRest=livre.getExemplaire()-1;
+				if(nbrRest>0)
+					livre.setExemplaire(nbrRest);
+				//System.out.println("*********************Livre ON Selectb items******************** "+i+" "+livre);
 
-			livreService.saveLivre(livre);
-			System.out.println("*********************Livre******************** "+livre);
+				livreService.saveLivre(livre);
+				//System.out.println("*********************Livre******************** "+i+" "+livre);
+				selectedEmprunt.setLivre(new Livre());
+				selectedEmprunt.setLivre(livre);
+				empruntService.saveEmprunt(selectedEmprunt);
 
-			empruntService.saveEmprunt(selectedEmprunt);
+			});
+			/*for (int i = 0;i<selectedLivres.length+1;i++){
+				System.out.println("selectedLivres "+selectedLivres[i]);
+				Livre livre=new Livre();
+				livre=livreService.getLivreRepository().findById(selectedLivres[i]).get();
+
+				int nbrRest=livre.getExemplaire()-1;
+				if(nbrRest>0)
+					livre.setExemplaire(nbrRest);
+				//System.out.println("*********************Livre ON Selectb items******************** "+i+" "+livre);
+
+				livreService.saveLivre(livre);
+				//System.out.println("*********************Livre******************** "+i+" "+livre);
+				selectedEmprunt.setLivre(new Livre());
+				selectedEmprunt.setLivre(livre);
+				empruntService.saveEmprunt(selectedEmprunt);
+			}*/
+
+
 	
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Emprunt ajouté"));
 		} else {
 			empruntService.saveEmprunt(selectedEmprunt);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le Emprunt est mis a jour"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" L'emprunt est mis à jour"));
 		}
 		emprunts = empruntService.getEmprunts();
 		PrimeFaces.current().executeScript("PF('manageEmpruntDialog').hide()");
 		PrimeFaces.current().ajax().update("form:messages", "form:dt-emprunts");
 		
-		/* this.selectedEmprunt.getLivre.setExemplaire(this.selectedEmprunt.getLivre.
-		 getExemplaire-1); This.livreService.save(this.selectedEmprunt.getLivre);
-		 */
+		
 	}
 
 	public void deleteEmprunt() {
@@ -143,7 +169,7 @@ public class EmpruntBean {
 		this.emprunts.removeAll(this.selectedEmprunts);
 		//this.empruntRepository.deleteAll(this.selectedEmprunts);
 		this.selectedEmprunts = null;
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Emprunts Removed"));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Emprunts supprimés"));
 		PrimeFaces.current().ajax().update("form:messages", "form:dt-emprunts");
 		PrimeFaces.current().executeScript("PF('dtEmprunts').clearFilters()");
 	}

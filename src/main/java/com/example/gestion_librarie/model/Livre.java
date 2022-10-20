@@ -4,10 +4,14 @@ package com.example.gestion_librarie.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 
@@ -26,7 +30,9 @@ public class Livre {
 	private String description;
 	private String couverture;
 
-	
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "categorie_id", referencedColumnName = "id")
+	private Categorie categorie;
 	
 	//modification
 	public boolean equals(Object other) {

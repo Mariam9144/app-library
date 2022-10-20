@@ -78,11 +78,11 @@ public class MaisonEditionBean {
            // this.selectedMaisonEdition.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
             //this.maisonEditions.add(this.selectedMaisonEdition);
         	maisonEditionService.saveMaisonEdition(selectedMaisonEdition);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("MaisonEdition ajouté"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Maison d'édition ajouté"));
         }
         else {
         	maisonEditionService.saveMaisonEdition(selectedMaisonEdition);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le MaisonEdition est mis a jour"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" La Maison d'édition est mis à jour"));
         }
         maisonEditions = maisonEditionService.getMaisonEditions();
         PrimeFaces.current().executeScript("PF('manageMaisonEditionDialog').hide()");
@@ -96,7 +96,7 @@ public class MaisonEditionBean {
     	//recharge
     	maisonEditions = maisonEditionService.getMaisonEditionRepository().findAll();
         this.selectedMaisonEdition = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("MaisonEdition supprimé"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Maison d'édition supprimé"));
         PrimeFaces.current().ajax().update("form:messages", "form:dt-maisonEditions");
     }
 

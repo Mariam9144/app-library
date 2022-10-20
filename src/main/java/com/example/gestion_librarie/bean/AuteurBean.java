@@ -74,7 +74,7 @@ public class AuteurBean {
         }
         else {
         	auteurService.saveAuteur(selectedAuteur);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le Auteur est mis a jour"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" L'auteur est mis à jour"));
         }
         auteurs = auteurService.getAuteurs();
         PrimeFaces.current().executeScript("PF('manageAuteurDialog').hide()");
@@ -109,7 +109,7 @@ public class AuteurBean {
         this.auteurs.removeAll(this.selectedAuteurs);
         this.auteurRepository.deleteAll(this.selectedAuteurs);
         this.selectedAuteurs = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Auteurs Removed"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Auteurs supprimés"));
         PrimeFaces.current().ajax().update("form:messages", "form:dt-auteurs");
         PrimeFaces.current().executeScript("PF('dtAuteurs').clearFilters()");
     }

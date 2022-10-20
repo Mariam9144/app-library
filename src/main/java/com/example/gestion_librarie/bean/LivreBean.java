@@ -12,8 +12,10 @@ import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.gestion_librarie.model.Categorie;
 import com.example.gestion_librarie.model.Livre;
 import com.example.gestion_librarie.repository.LivreRepository;
+import com.example.gestion_librarie.service.CategorieService;
 import com.example.gestion_librarie.service.LivreService;
 
 import lombok.Data;
@@ -29,6 +31,11 @@ public class LivreBean {
     private Livre selectedLivre;
 
     private List<Livre> selectedLivres;
+    
+    
+    private List<Categorie> categories;
+    @Autowired
+	private CategorieService categorieService;
 
     @Autowired
     private LivreService livreService;
@@ -74,7 +81,7 @@ public class LivreBean {
         }
         else {
         	livreService.saveLivre(selectedLivre);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le Livre est mis a jour"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le Livre est mis à jour"));
         }
         livres = livreService.getLivres();
         PrimeFaces.current().executeScript("PF('manageLivreDialog').hide()");
@@ -109,7 +116,7 @@ public class LivreBean {
         this.livres.removeAll(this.selectedLivres);
         this.livreRepository.deleteAll(this.selectedLivres);
         this.selectedLivres = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Livres Removed"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Livres supprimés"));
         PrimeFaces.current().ajax().update("form:messages", "form:dt-livres");
         PrimeFaces.current().executeScript("PF('dtLivres').clearFilters()");
     }

@@ -15,6 +15,7 @@ public class Categorie {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String libelle;
+	private String description;
 	
 	
 	

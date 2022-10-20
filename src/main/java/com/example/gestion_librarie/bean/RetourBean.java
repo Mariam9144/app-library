@@ -110,9 +110,7 @@ public class RetourBean {
 		PrimeFaces.current().executeScript("PF('manageRetourDialog').hide()");
 		PrimeFaces.current().ajax().update("form:messages", "form:dt-retours");
 		
-		/* this.selectedRetour.getLivre.setExemplaire(this.selectedRetour.getLivre.
-		 getExemplaire-1); This.livreService.save(this.selectedRetour.getLivre);
-		 */
+		
 	}
 
 	public void deleteRetour() {

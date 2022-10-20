@@ -119,7 +119,7 @@ public class MembreBean {
         this.membres.removeAll(this.selectedMembres);
         this.membreRepository.deleteAll(this.selectedMembres);
         this.selectedMembres = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Membres Removed"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Membres Supprimés"));
         PrimeFaces.current().ajax().update("form:messages", "form:dt-membres");
         PrimeFaces.current().executeScript("PF('dtMembres').clearFilters()");
     }

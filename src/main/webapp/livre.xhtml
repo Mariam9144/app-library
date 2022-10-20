@@ -82,21 +82,20 @@
 										update=":form:delete-livres-button" />
 
 									<p:column selectionMode="multiple" exportable="false"></p:column>
-									<!-- 
-									<p:column headerText="Identifiant" sortBy="#{livre.id}"
-										filterBy="#{livre.id}">
-										<h:outputText value="#{livre.id}" />
-									</p:column>
-									 -->
+									
+									
 									<p:column headerText="Nom" sortBy="#{livre.nom}"
 										filterBy="#{livre.nom}">
 										<h:outputText value="#{livre.nom}" />
 									</p:column>
+									<p:column headerText="Catégorie"
+										sortBy="#{livre.categorie.libelle}"
+										filterBy="#{livre.categorie.libelle}">
+										<h:outputText value="#{livre.categorie.libelle}" />
+									</p:column>
 									<p:column headerText="Langue" sortBy="#{livre.langue}"
 										filterBy="#{livre.langue}">
 										<h:outputText value="#{livre.langue}" />
-
-
 									</p:column>
 									<p:column headerText="Date Publication"
 										sortBy="#{livre.date_publication}"
@@ -119,8 +118,7 @@
 										filterBy="#{livre.couverture}">
 										<h:outputText value="#{livre.couverture}" />
 									</p:column>
-
-
+								
 									<p:column exportable="false">
 										<p:commandButton icon="pi pi-pencil"
 											update=":form:manage-livre-content"
@@ -148,10 +146,20 @@
 
 											<div class="p-grid ui-fluid">
 
-												<div class="p-field p-col-12 p-md-12">
+												<div class="p-field p-col-12 p-md-6">
 													<p:outputLabel for="nom">Nom du Livre</p:outputLabel>
 													<p:inputText id="nom"
 														value="#{livreBean.selectedLivre.nom}" required="true" />
+												</div>
+												<div class="p-field p-col-12 p-md-6">
+													<h:outputLabel for="">Catégorie</h:outputLabel>
+													<BR />
+													<p:selectOneMenu
+														value="#{livreBean.selectedLivre.categorie}"
+														converter="#{genericSecuredConverter}">
+														<f:selectItems value="#{categorieBean.categories}" var="categorie"
+															itemLabel="#{categorie.libelle}" itemValue="#{categorie}" />
+													</p:selectOneMenu>
 												</div>
 											</div>
 											<div class="p-grid ui-fluid">
@@ -203,7 +211,7 @@
 								</p:dialog>
 
 								<p:confirmDialog widgetVar="deleteLivreDialog" showEffect="fade"
-									width="300" message="Delete the livre?" header="Confirm"
+									width="300" message="Voulez-vous supprimé le livre?" header="Confirm"
 									severity="warn">
 									<p:commandButton value="OUI" icon="pi pi-check"
 										actionListener="#{livreBean.deleteLivre}" process="@this"
