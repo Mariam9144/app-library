@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import com.example.gestion_librarie.repository.EmpruntRepository;
 import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,8 @@ public class LivreBean {
     
     @Autowired
     private LivreRepository livreRepository;
+    @Autowired
+    private EmpruntRepository empruntRepository;
 
     @PostConstruct
     public void init() {
@@ -89,6 +92,12 @@ public class LivreBean {
     }
 
     public void deleteLivre() {
+        if (empruntRepository.existsByLivre(this.selectedLivre)){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Impossible de supprimer le livre"));
+            PrimeFaces.current().ajax().update("form:messages", "form:dt-membres");
+            return;
+
+        }
         //this.livres.remove(this.selectedLivre);
     	//livres = livreService.getLivreRepository().findAll();
     	this.livreService.deleteLivre(selectedLivre.getId());
