@@ -33,6 +33,7 @@
 											oncomplete="PF('manageAuteurDialog').show()"
 											styleClass="ui-button-success" style="margin-right: .5rem"
 											immediate="true">
+											
 											<p:resetInput target=":form:manage-auteur-content" />
 										</p:commandButton>
 										<p:commandButton id="delete-auteurs-button"
@@ -46,13 +47,13 @@
 										</p:commandButton>
 									</p:toolbarGroup>
 									<p:toolbarGroup align="right">
-
-										<p:button value="Deconnexion" href="/logout"
-											styleClass="ui-button-help" icon="pi pi-power-off" />
 										<p:commandButton value="#{authBean.currentUser.username}"
 											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
 											style="margin-right: .5rem" process="@this" ajax="false">
 										</p:commandButton>
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+
 									</p:toolbarGroup>
 								</p:toolbar>
 
@@ -158,8 +159,9 @@
 								</p:dialog>
 
 								<p:confirmDialog widgetVar="deleteAuteurDialog"
-									showEffect="fade" width="300" message="Voulez-vous supprimés l'auteur?"
-									header="Confirm" severity="warn">
+									showEffect="fade" width="300"
+									message="Voulez-vous supprimés l'auteur?" header="Confirm"
+									severity="warn">
 									<p:commandButton value="Yes" icon="pi pi-check"
 										actionListener="#{auteurBean.deleteAuteur}" process="@this"
 										oncomplete="PF('deleteAuteurDialog').hide()" />

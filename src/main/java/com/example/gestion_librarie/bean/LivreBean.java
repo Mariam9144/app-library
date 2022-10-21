@@ -13,9 +13,11 @@ import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.gestion_librarie.model.Auteur;
 import com.example.gestion_librarie.model.Categorie;
 import com.example.gestion_librarie.model.Livre;
 import com.example.gestion_librarie.repository.LivreRepository;
+import com.example.gestion_librarie.service.AuteurService;
 import com.example.gestion_librarie.service.CategorieService;
 import com.example.gestion_librarie.service.LivreService;
 
@@ -38,6 +40,9 @@ public class LivreBean {
     @Autowired
 	private CategorieService categorieService;
 
+    private List<Auteur> auteurs;
+    @Autowired
+	private AuteurService auteurService;
     @Autowired
     private LivreService livreService;
     

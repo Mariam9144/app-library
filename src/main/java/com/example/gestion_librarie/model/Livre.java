@@ -33,6 +33,9 @@ public class Livre {
 	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "categorie_id", referencedColumnName = "id")
 	private Categorie categorie;
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "auteur_id", referencedColumnName = "id")
+	private Auteur auteur;
 	
 	//modification
 	public boolean equals(Object other) {

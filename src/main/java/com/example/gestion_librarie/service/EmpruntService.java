@@ -31,8 +31,9 @@ public class EmpruntService {
     }
 
     public Emprunt saveEmprunt(Emprunt emprunt) {
-        Emprunt savedEmprunt = empruntRepository.save(emprunt);
-        empruntRepository.flush();
-        return savedEmprunt;
+        //Emprunt savedEmprunt =
+                return empruntRepository.saveAndFlush(emprunt);
+        //empruntRepository.flush();
+        //return savedEmprunt;
     }
 }

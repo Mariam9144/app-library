@@ -36,32 +36,34 @@
 											<p:resetInput target=":form:manage-categorie-content" />
 										</p:commandButton>
 										<p:commandButton id="delete-categories-button"
-											value="#{categorieBean.deleteButtonMessage}" icon="pi pi-trash"
+											value="#{categorieBean.deleteButtonMessage}"
+											icon="pi pi-trash"
 											actionListener="#{categorieBean.deleteSelectedCategories}"
 											styleClass="ui-button-danger"
-											disabled="#{!categorieBean.hasSelectedCategories()}" update="@this">
+											disabled="#{!categorieBean.hasSelectedCategories()}"
+											update="@this">
 											<p:confirm header="Confirmation"
 												message="Delete the selected categories?"
 												icon="pi pi-exclamation-triangle" />
 										</p:commandButton>
 									</p:toolbarGroup>
 									<p:toolbarGroup align="right">
-
-										<p:button value="Deconnexion" href="/logout"
-											styleClass="ui-button-help" icon="pi pi-power-off" />
 										<p:commandButton value="#{authBean.currentUser.username}"
 											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
 											style="margin-right: .5rem" process="@this" ajax="false">
 										</p:commandButton>
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+
 									</p:toolbarGroup>
 								</p:toolbar>
 
-								<p:dataTable id="dt-categories" widgetVar="dtCategories" var="categorie"
-									value="#{categorieBean.categories}" reflow="true"
-									styleClass="categories-table"
-									selection="#{categorieBean.selectedCategories}" rowKey="#{categorie.id}"
-									paginator="true" rows="10" rowSelectMode="add"
-									paginatorPosition="bottom">
+								<p:dataTable id="dt-categories" widgetVar="dtCategories"
+									var="categorie" value="#{categorieBean.categories}"
+									reflow="true" styleClass="categories-table"
+									selection="#{categorieBean.selectedCategories}"
+									rowKey="#{categorie.id}" paginator="true" rows="10"
+									rowSelectMode="add" paginatorPosition="bottom">
 									<f:facet name="header">
 										<div class="categories-table-header">
 											<span style="font-weight: bold">CATEGORIE DE LIVRE</span> <span
@@ -73,7 +75,8 @@
 										</div>
 									</f:facet>
 
-									<p:ajax event="rowSelect" update=":form:delete-categories-button" />
+									<p:ajax event="rowSelect"
+										update=":form:delete-categories-button" />
 									<p:ajax event="rowUnselect"
 										update=":form:delete-categories-button" />
 									<p:ajax event="rowSelectCheckbox"
@@ -85,11 +88,11 @@
 
 									<p:column selectionMode="multiple" exportable="false"></p:column>
 
-									<p:column headerText="Nom de la catégorie" sortBy="#{categorie.libelle}"
-										filterBy="#{categorie.libelle}">
+									<p:column headerText="Nom de la catégorie"
+										sortBy="#{categorie.libelle}" filterBy="#{categorie.libelle}">
 										<h:outputText value="#{categorie.libelle}" />
 									</p:column>
-									
+
 									<p:column headerText="Description"
 										sortBy="#{categorie.description}"
 										filterBy="#{categorie.description}">
@@ -117,8 +120,9 @@
 
 								</p:dataTable>
 
-								<p:dialog header="Categorie Details" showEffect="fade" modal="true"
-									widgetVar="manageCategorieDialog" responsive="true">
+								<p:dialog header="Categorie Details" showEffect="fade"
+									modal="true" widgetVar="manageCategorieDialog"
+									responsive="true">
 									<p:outputPanel id="manage-categorie-content" class="ui-fluid">
 										<p:outputPanel
 											rendered="#{not empty categorieBean.selectedCategorie}">
@@ -126,9 +130,10 @@
 											<div class="p-field">
 												<p:outputLabel for="nom">Nom de la catégorie</p:outputLabel>
 												<p:inputText id="nom"
-													value="#{categorieBean.selectedCategorie.libelle}" required="true" />
+													value="#{categorieBean.selectedCategorie.libelle}"
+													required="true" />
 											</div>
-		
+
 											<div class="p-field">
 												<p:outputLabel for="description">Description</p:outputLabel>
 												<p:inputTextarea id="description"
@@ -151,10 +156,12 @@
 								</p:dialog>
 
 								<p:confirmDialog widgetVar="deleteCategorieDialog"
-									showEffect="fade" width="300" message="Voulez-vous supprimés la catégorie?"
-									header="Confirm" severity="warn">
+									showEffect="fade" width="300"
+									message="Voulez-vous supprimés la catégorie?" header="Confirm"
+									severity="warn">
 									<p:commandButton value="Yes" icon="pi pi-check"
-										actionListener="#{categorieBean.deleteCategorie}" process="@this"
+										actionListener="#{categorieBean.deleteCategorie}"
+										process="@this"
 										oncomplete="PF('deleteCategorieDialog').hide()" />
 									<p:commandButton value="No" type="button"
 										styleClass="ui-button-secondary" icon="pi pi-times"

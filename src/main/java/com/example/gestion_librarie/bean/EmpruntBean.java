@@ -88,7 +88,7 @@ public class EmpruntBean {
 	}
 
 	public void saveEmprunt() {
-		if (this.selectedEmprunt.getId() == null) {
+		/*if (this.selectedEmprunt.getId() == null) {
 			//System.out.println("LISTE ID LIVRE "+ Arrays.stream(selectedLivres).iterator());
 			// this.selectedEmprunt.setCode(UUID.randomUUID().toString().replaceAll("-",
 			// "").substring(0, 9));
@@ -110,7 +110,7 @@ public class EmpruntBean {
 				empruntService.saveEmprunt(selectedEmprunt);
 
 			});
-			/*for (int i = 0;i<selectedLivres.length+1;i++){
+			for (int i = 0;i<selectedLivres.length+1;i++){
 				System.out.println("selectedLivres "+selectedLivres[i]);
 				Livre livre=new Livre();
 				livre=livreService.getLivreRepository().findById(selectedLivres[i]).get();
@@ -129,10 +129,33 @@ public class EmpruntBean {
 
 
 	
+		if (this.selectedEmprunt.getId() == null) {
+			// this.selectedEmprunt.setCode(UUID.randomUUID().toString().replaceAll("-",
+			// "").substring(0, 9));
+			// this.emprunts.add(this.selectedEmprunt);
+
+			//System.out.println("Membre "+selectedEmprunt);
+			Livre livre=new Livre();
+			livre.setId(selectedEmprunt.getLivre().getId());
+			livre.setCouverture(selectedEmprunt.getLivre().getCouverture());
+			livre.setNom(selectedEmprunt.getLivre().getNom());
+			livre.setDate_publication(selectedEmprunt.getLivre().getDate_publication());
+			livre.setDescription(selectedEmprunt.getLivre().getDescription());
+			livre.setLangue(selectedEmprunt.getLivre().getLangue());
+			int nbrRest=selectedEmprunt.getLivre().getExemplaire()-1;
+			if(nbrRest>0)
+                livre.setExemplaire(nbrRest);
+			System.out.println("*********************Livre ON Selectb items******************** "+livre);
+
+			livreService.saveLivre(livre);
+			System.out.println("*********************Livre******************** "+livre);
+
+			empruntService.saveEmprunt(selectedEmprunt);
+	
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Emprunt ajouté"));
 		} else {
 			empruntService.saveEmprunt(selectedEmprunt);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" L'emprunt est mis à jour"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(" Le Emprunt est mis a jour"));
 		}
 		emprunts = empruntService.getEmprunts();
 		PrimeFaces.current().executeScript("PF('manageEmpruntDialog').hide()");

@@ -41,18 +41,18 @@
 											disabled="#{!empruntBean.hasSelectedEmprunts()}"
 											update="@this">
 											<p:confirm header="Confirmation"
-												message="Delete the selected emprunts?"
+												message="Voulez vous supprimés emprunts?"
 												icon="pi pi-exclamation-triangle" />
 										</p:commandButton>
 									</p:toolbarGroup>
 									<p:toolbarGroup align="right">
-
-										<p:button value="Deconnexion" href="/logout"
-											styleClass="ui-button-help" icon="pi pi-power-off" />
 										<p:commandButton value="#{authBean.currentUser.username}"
 											icon="pi pi-user" styleClass="ui-button-flat ui-button-plain"
 											style="margin-right: .5rem" process="@this" ajax="false">
 										</p:commandButton>
+										<p:button value="Deconnexion" href="/logout"
+											styleClass="ui-button-help" icon="pi pi-power-off" />
+
 									</p:toolbarGroup>
 								</p:toolbar>
 
@@ -143,18 +143,16 @@
 														itemLabel="#{membre.nom}" itemValue="#{membre}" />
 												</p:selectOneMenu>
 											</div>
-
 											<div class="p-field ">
-											<h:outputLabel for="">Livre</h:outputLabel>
-											<BR />
-											<p:selectCheckboxMenu id="multiple" value="#{empruntBean.selectedLivres}" label="Livres" style="min-width: 15rem"
-																  multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250"
-																  emptyLabel="Please select..." updateLabel="true">
-												<p:ajax event="itemUnselect" listener="#{empruntBean.onItemUnselect}"/>
-												<f:selectItems value="#{livreBean.livres}" var="livre"
-															   itemLabel="#{livre.nom}" itemValue="#{livre.id}"/>
-											</p:selectCheckboxMenu>
+												<h:outputLabel for="">Livre</h:outputLabel>
+												<p:selectOneMenu
+													value="#{empruntBean.selectedEmprunt.livre}"
+													converter="#{genericSecuredConverter}">
+													<f:selectItems value="#{livreBean.livres}" var="livre"
+														itemLabel="#{livre.nom}" itemValue="#{livre}" />
+												</p:selectOneMenu>
 											</div>
+
 											<div class="p-field">
 												<p:outputLabel for="date_debut">Date de Début</p:outputLabel>
 												<p:datePicker id="date_debut"
@@ -184,8 +182,9 @@
 								</p:dialog>
 
 								<p:confirmDialog widgetVar="deleteEmpruntDialog"
-									showEffect="fade" width="300" message="Voulez-vous supprimé l'emprunt?"
-									header="Confirm" severity="warn">
+									showEffect="fade" width="300"
+									message="Voulez-vous supprimé l'emprunt?" header="Confirm"
+									severity="warn">
 									<p:commandButton value="OUI" icon="pi pi-check"
 										actionListener="#{empruntBean.deleteEmprunt}" process="@this"
 										oncomplete="PF('deleteEmpruntDialog').hide()" />

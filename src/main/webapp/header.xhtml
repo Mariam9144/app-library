@@ -18,7 +18,7 @@
 					<p:panelMenu style="width:300px">
 
 						
-						<p:submenu label="Catégories" update="messages" ajax="false">
+						<p:submenu label="Catégories" update="messages" ajax="false"  rendered="#{authBean.currentUser.role=='Administrateur'}">
 							<p:menuitem value="Auteurs"
 								url="http://localhost:8080/auteur.xhtml" ajax="false" icon="pi pi-user"
 								update="messages" />
@@ -34,21 +34,21 @@
 								update="messages" />
 
 						</p:submenu>
-						<p:submenu label="Membre" update="messages" ajax="false">
+						<p:submenu label="Membre" update="messages" ajax="false"  rendered="#{authBean.currentUser.role=='Administrateur'}">
 							<p:menuitem value="Membre"
 								url="http://localhost:8080/membre.xhtml" icon="pi pi-user"
 								update="messages" />
 							
 						</p:submenu>
-						<p:submenu label="Livre" update="messages" ajax="false" icon="pi pi-book">
-							<p:menuitem value="Livres"
+						<p:submenu label="Livre" update="messages" ajax="false" icon="pi pi-book" rendered="#{authBean.currentUser.role=='Utilisateur'}" >
+							<p:menuitem value="Livres" 
 								url="http://localhost:8080/livre.xhtml" icon="pi pi-book"
 								update="messages" />
-							<p:menuitem value="Catégorie"
+							<p:menuitem value="Catégorie"  
 								url="http://localhost:8080/categorie.xhtml" icon="pi pi-bookmark"
 								update="messages" />
 						</p:submenu>
-						<p:submenu label="Administrations" update="messages" ajax="false">
+						<p:submenu label="Administrations" update="messages" ajax="false"  rendered="#{authBean.currentUser.role=='Administrateur'}" >
 							<p:menuitem value="Utilisateurs" icon="pi pi-users"
 								url="http://localhost:8080/user.xhtml" />
 						</p:submenu>
